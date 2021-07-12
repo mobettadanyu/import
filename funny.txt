@@ -1,0 +1,27 @@
+use this to clear everything on the database :D
+now you can guess why i cut it out and pasted it here, we DO NOT want to run this accidentally, so please leave it here (:
+
+
+app.get("/clearDreams", (request, response) => {
+  // DISALLOW_WRITE is an ENV variable that gets reset for new projects so you can write to the database
+  if (!process.env.DISALLOW_WRITE) {
+    db.each(
+      "SELECT * from Dreams",
+      (err, row) => {
+        console.log("row", row);
+        db.run(`DELETE FROM Dreams WHERE ID=?`, row.id, error => {
+          if (row) {
+            console.log(`deleted row ${row.id}`);
+          }
+        });
+      },
+      err => {
+        if (err) {
+          response.send({ message: "error!" });
+        } else {
+          response.send({ message: "success" });
+        }
+      }
+    );
+  }
+});

@@ -1,0 +1,37 @@
+modified from the original code because you dont need to replace "<" and ">" unless youre showing the data on an html page, in which case, it is very important that you do
+else someone could upload "<script>alert("gamig");</script>" and have it run 
+
+kept as a reminder in case we want to make site to show off data
+
+
+
+// endpoint to add a dream to the database
+app.post("/addDream", (request, response) => {
+  console.log(`add to dreams ${request.body.dream}`);
+
+  // DISALLOW_WRITE is an ENV variable that gets reset for new projects
+  // so they can write to the database
+  if (!process.env.DISALLOW_WRITE) {
+    const cleansedDream = cleanseString(request.body.dream);
+    db.run(`INSERT INTO Dreams (dream) VALUES (?)`, cleansedDream, error => {
+      if (error) {
+        response.send({ message: "error!" });
+      } else {
+        response.send({ message: "success" });
+      }
+    });
+  }
+});
+
+// endpoint to clear dreams from the database
+
+
+
+
+
+
+
+// helper function that prevents html/css/script malice
+const cleanseString = function(string) {
+  return string.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+};
